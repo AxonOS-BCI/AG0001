@@ -1,5 +1,5 @@
 /* no-telemetry
-   AxonOS AG0001 — Chronos Boundary Flight v3.1
+   AxonOS AG0001 — Chronos Boundary Flight v0.7.0
    Static browser runtime. No analytics, no network calls, no telemetry.
 */
 (() => {

@@ -2,7 +2,7 @@
 
 ## Supported version
 
-`v0.1.0`
+`v0.7.0`
 
 ## Public runtime exclusions
 

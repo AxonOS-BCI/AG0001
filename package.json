@@ -1,6 +1,6 @@
 {
   "name": "axonos-ag0001-chronos-boundary-flight",
-  "version": "0.1.0",
+  "version": "0.7.0",
   "private": true,
   "description": "Local-only AxonOS browser game about cognitive sovereignty and typed intent.",
   "scripts": {

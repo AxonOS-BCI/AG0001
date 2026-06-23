@@ -52,4 +52,4 @@ else
   echo "WARN: node not installed locally; skipping JS syntax check"
 fi
 
-echo "OK: AG0001 v3.1 runtime verified"
+echo "OK: AG0001 v0.7.0 runtime verified"
