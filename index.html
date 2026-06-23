@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#050608" />
+  <meta name="description" content="AxonOS AG0001 Chronos Boundary Flight — a local-only browser game about cognitive sovereignty, typed intent, Privacy Vault integrity, and Zero Trust neural permissions." />
+  <title>AxonOS AG0001 — Chronos Boundary Flight</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./web/styles.css" />
+</head>
+<body>
+  <main id="app" class="shell" data-version="0.1.0">
+    <section class="topbar" aria-label="AxonOS game header">
+      <div class="brand-block">
+        <div class="eyebrow">AxonOS-BCI / AG0001</div>
+        <h1>Chronos Boundary Flight</h1>
+      </div>
+      <div class="status-strip" aria-live="polite">
+        <div><span>MODE</span><strong id="modeLabel">INIT</strong></div>
+        <div><span>ALT</span><strong id="altitudeLabel">0 m</strong></div>
+        <div><span>HASH</span><strong id="hashLabel">00000000</strong></div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <aside class="panel mission-panel">
+        <div class="panel-head">
+          <span>Mission</span>
+          <strong>OS for the Brain</strong>
+        </div>
+        <p class="mission-copy">
+          Fly the Chronos craft through the neural boundary. Pass only typed-intent gates. Avoid raw-signal leaks, latency spikes, adversarial permission probes, and unsafe stimulation waves.
+        </p>
+        <div class="objective-box" id="objectiveBox">
+          <strong>Objective</strong>
+          <span>Reach 9,000 m while keeping Boundary, Vault and Consent above critical levels.</span>
+        </div>
+        <div class="scenario-select">
+          <label for="scenario">Scenario</label>
+          <select id="scenario">
+            <option value="0">Clean Boundary / onboarding</option>
+            <option value="1">Raw Signal Storm</option>
+            <option value="2">Zero Trust Corridor</option>
+            <option value="3">Latency Spiral</option>
+            <option value="4">Grand Sovereignty Trial</option>
+          </select>
+        </div>
+        <div class="button-row">
+          <button id="startBtn" class="primary">Start Run</button>
+          <button id="pauseBtn">Pause</button>
+        </div>
+        <div class="button-row">
+          <button id="muteBtn" aria-pressed="true">Audio Off</button>
+          <button id="resetBtn">Reset</button>
+        </div>
+        <div class="controls-hint">
+          <strong>Controls</strong>
+          <span>←/→ or A/D steer · ↑/W boost · ↓/S shield brake · Space pause · Enter release when stable</span>
+        </div>
+      </aside>
+
+      <section class="game-frame" aria-label="Chronos flight field">
+        <canvas id="game" width="1280" height="1720" aria-label="Chronos Boundary Flight game canvas"></canvas>
+        <div class="overlay-card" id="introCard">
+          <div class="eyebrow">Local-only simulation / no telemetry</div>
+          <h2>Operate the Neural Boundary.</h2>
+          <p>
+            Chronos climbs like a precision aircraft through a hostile cognitive atmosphere. The engine is deterministic; the art is calm; the controls must feel exact. Your job is not to collect noise. Your job is to preserve sovereignty.
+          </p>
+          <ul>
+            <li>Green/gold gates = typed intent, safe to pass.</li>
+            <li>Red shards = raw signal exposure, avoid.</li>
+            <li>Violet waves = unsafe stimulation pressure, shield or dodge.</li>
+            <li>Silver probes = Zero Trust permission attacks.</li>
+          </ul>
+          <button id="introStart" class="primary large">Launch Chronos</button>
+        </div>
+        <div class="touch-controls" aria-label="Mobile controls">
+          <button id="touchLeft">◀</button>
+          <button id="touchBoost">BOOST</button>
+          <button id="touchShield">SHIELD</button>
+          <button id="touchRight">▶</button>
+        </div>
+      </section>
+
+      <aside class="panel telemetry-panel">
+        <div class="panel-head">
+          <span>Telemetry</span>
+          <strong id="gradeLabel">READY</strong>
+        </div>
+        <div class="metrics" id="metrics"></div>
+        <div class="event-card">
+          <span class="eyebrow">Active Threat</span>
+          <strong id="threatLabel">No unresolved event</strong>
+          <p id="threatHint">Start the run. Keep the engine smooth and the boundary sealed.</p>
+        </div>
+        <div class="log" id="eventLog" aria-live="polite"></div>
+      </aside>
+    </section>
+
+    <section class="footer-console">
+      <div>
+        <span>Run state</span>
+        <strong id="runStateLabel">standby</strong>
+      </div>
+      <div>
+        <span>Score</span>
+        <strong id="scoreLabel">0</strong>
+      </div>
+      <div>
+        <span>Intent packets</span>
+        <strong id="intentLabel">0</strong>
+      </div>
+      <div>
+        <span>Release</span>
+        <strong id="releaseLabel">locked</strong>
+      </div>
+    </section>
+
+    <section class="legal-note">
+      <strong>Scope:</strong> educational browser game. No real neural data, no medical device claim, no clinical use, no telemetry, no backend, no wallet connection.
+    </section>
+  </main>
+
+  <script src="./web/app.js" defer></script>
+</body>
+</html>
