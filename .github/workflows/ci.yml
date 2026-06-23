@@ -1,24 +1,149 @@
-name: CI
+name: AG0001 CI
 
 on:
   push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: ag0001-ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  verify:
-    name: verify static game
+  repository_contract:
+    name: 01 repository contract
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Verify
-        run: bash scripts/verify.sh
+      - uses: actions/checkout@v4
+      - name: Required files exist
+        run: |
+          test -f README.md
+          test -f index.html
+          test -f src/main.js
+          test -f VERSION
+          test -f LICENSE
+          test -f SHA256SUMS
+          test -f .github/workflows/ci.yml
+
+  readme_run_block:
+    name: 02 README run block
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: README exposes direct run command
+        run: |
+          grep -q '^## Run' README.md
+          grep -q 'python3 -m http.server 8080' README.md
+          grep -q 'http://127.0.0.1:8080' README.md
+
+  html_integrity:
+    name: 03 HTML integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate static entrypoint
+        run: |
+          grep -q '<!doctype html>' index.html
+          grep -q '<canvas id="game"' index.html
+          grep -q 'src/main.js' index.html
+
+  javascript_syntax:
+    name: 04 JavaScript syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Node syntax check
+        run: node --check src/main.js
+
+  static_runtime_smoke:
+    name: 05 static runtime smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Serve and fetch page
+        run: |
+          python3 -m http.server 8080 >/tmp/ag0001-http.log 2>&1 &
+          pid=$!
+          trap 'kill $pid' EXIT
+          sleep 2
+          curl -fsS http://127.0.0.1:8080/ | grep -q 'Chronos Boundary Flight'
+
+  dependency_free:
+    name: 06 dependency-free check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: No package manager dependency surface
+        run: |
+          test ! -f package-lock.json
+          test ! -f yarn.lock
+          test ! -f pnpm-lock.yaml
+          test ! -d node_modules
+
+  secret_scan_light:
+    name: 07 lightweight secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reject common leaked-token patterns
+        run: |
+          ! grep -RInE '(AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9_]{36,}|xox[baprs]-[A-Za-z0-9-]+)' . --exclude-dir=.git
+
+  line_endings:
+    name: 08 line-ending check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reject CRLF
+        run: |
+          if grep -RIl $'\r' . --exclude-dir=.git; then
+            echo "CRLF line endings detected"
+            exit 1
+          fi
+
+  file_size_budget:
+    name: 09 file-size budget
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reject oversized files
+        run: |
+          max_bytes=1048576
+          while IFS= read -r file; do
+            size=$(wc -c < "$file")
+            if [ "$size" -gt "$max_bytes" ]; then
+              echo "Oversized file: $file"
+              exit 1
+            fi
+          done < <(find . -type f -not -path './.git/*')
+
+  license_presence:
+    name: 10 license presence
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: License exists
+        run: |
+          test -f LICENSE
+          grep -q 'MIT License' LICENSE
+
+  version_consistency:
+    name: 11 version consistency
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: VERSION matches README
+        run: |
+          version="$(cat VERSION)"
+          grep -q "Current version: \`$version\`" README.md
+
+  release_manifest:
+    name: 12 SHA256 release manifest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify SHA256SUMS
+        run: sha256sum -c SHA256SUMS

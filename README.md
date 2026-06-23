@@ -1,111 +1,74 @@
-# AxonOS AG0001 — Chronos Boundary Flight
+# AG0001 — Chronos Boundary Flight
 
-**Version:** `v0.1.0`  
-**Repository:** `https://github.com/AxonOS-BCI/AG0001`  
-**Product type:** local-only browser game / public AxonOS reference experience  
-**Owner / IP:** Denis Yermakou / AxonOS  
-**Jurisdiction:** Singapore
+[![CI](https://github.com/AxonOS-BCI/AG0001/actions/workflows/ci.yml/badge.svg)](https://github.com/AxonOS-BCI/AG0001/actions/workflows/ci.yml)
 
-> Fly upward. Preserve the boundary. Release typed intent, never raw signal.
+**AG0001** is a browser-native AxonOS game prototype: a vertical ascent flight where the player crosses cognitive boundaries, avoids hostile interference, and keeps the neural control loop stable.
 
-## What this is
-
-AG0001 is a fast, playable browser game that turns the AxonOS thesis into an interactive experience.
-
-The player controls the **Chronos craft**, a precision aircraft moving upward through a neural boundary corridor. The game feels like an upward-flight arcade game, but the objects are AxonOS concepts:
-
-- **Typed Intent gates** are safe cognition crossing the application boundary.
-- **Raw Signal shards** represent private neural data that must never leak.
-- **Zero Trust probes** represent permission escalation attempts.
-- **Latency fields** represent real-time overload and WCET pressure.
-- **Unsafe stimulation waves** represent output that must remain inside a safety envelope.
-- **Privacy Vault** and **Consent Coherence** are live telemetry metrics.
-
-## Gameplay
-
-Reach `9,000 m` and open the release window while keeping:
-
-- Boundary Integrity stable;
-- Privacy Vault intact;
-- Consent Coherence high;
-- Raw Leak Risk low;
-- Stimulation Risk low;
-- Latency Pressure under control.
-
-## Controls
-
-| Input | Action |
-|---|---|
-| `← / →` or `A / D` | steer |
-| `↑` or `W` | boost |
-| `↓` or `S` | shield brake |
-| `Space` | pause / resume |
-| `Enter` | release sovereignty when stable |
-| Touch buttons | mobile steering, boost, shield |
-
-## Engine notes
-
-The game uses a custom vanilla JavaScript canvas engine:
-
-- fixed-step simulation at `60 Hz`;
-- frame-rate-independent physics;
-- seeded deterministic obstacle generation;
-- inertial aircraft handling with thrust, drag, banking and shield braking;
-- no external libraries;
-- no external assets;
-- no telemetry;
-- no backend;
-- no wallet connection;
-- no third-party scripts or CDNs.
-
-This first `AG0001` version is intentionally static and GitHub Pages friendly. A later version can move the scoring/state core into Rust/WASM, but this package does not overclaim that the browser runtime is Rust-authoritative.
-
-## Run locally
+## Run
 
 ```bash
+git clone https://github.com/AxonOS-BCI/AG0001.git
+cd AG0001
 python3 -m http.server 8080
 ```
 
 Open:
 
 ```text
-http://127.0.0.1:8080/
+http://127.0.0.1:8080
 ```
 
-## Verify
-
-```bash
-bash scripts/verify.sh
-```
-
-## GitHub Pages
-
-The repository includes `.github/workflows/pages.yml`. After pushing, set:
+Controls:
 
 ```text
-Settings → Pages → Source → GitHub Actions
+Arrow Left / A   — move left
+Arrow Right / D  — move right
+Space            — restart after crash
 ```
 
-Live URL target:
+## Concept
+
+Chronos Boundary Flight is not just an arcade runner. It is a playable metaphor for AxonOS:
+
+- the aircraft represents the cognitive runtime;
+- obstacles represent noisy, unsafe, or unauthorized signal boundaries;
+- stability represents low-latency neural control;
+- ascent represents progression from raw signal to protected intent;
+- failure represents loss of deterministic control.
+
+## Repository Contract
+
+This repository must stay runnable without build tools.
+
+Required files:
 
 ```text
-https://axonos-bci.github.io/AG0001/
+README.md
+index.html
+src/main.js
+.github/workflows/ci.yml
+VERSION
+LICENSE
+SHA256SUMS
 ```
 
-## Public claims boundary
+## CI Surface — 12 Jobs
 
-This repository is an educational game and brand/reference experience. It does **not** claim:
+The CI workflow contains exactly 12 jobs:
 
-- medical device functionality;
-- clinical validation;
-- diagnosis or treatment;
-- real EEG/BCI ingestion;
-- hardware stimulation control;
-- production BCI integration;
-- investment, token, gambling, yield or payment mechanics.
+1. repository contract
+2. README run block
+3. HTML integrity
+4. JavaScript syntax
+5. static runtime smoke test
+6. dependency-free check
+7. lightweight secret scan
+8. line-ending check
+9. file-size budget
+10. license presence
+11. version consistency
+12. SHA256 release manifest
 
-## License / IP
+## Version
 
-The source is published for inspection and demonstration. AxonOS names, marks, visual identity, gameplay concept, private policy packs, and commercial deployment material remain proprietary unless a separate written license is granted.
-
-See `LICENSE`, `IP_NOTICE.md`, `PRIVACY_NOTICE.md`, and `SECURITY.md`.
+Current version: `0.1.0`
