@@ -14,7 +14,7 @@
 
 ## Chronos Boundary Flight v3
 
-Current playable build: `0.3.0`.
+Current playable build: `0.3.1`.
 
 V3 adds menu, loadouts, difficulty, shield, boost, minimap, mobile controls, persistent pilot log, four AxonOS metrics, and a static zero-telemetry runtime.
 
