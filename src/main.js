@@ -1,3 +1,4 @@
+// no-telemetry
 (() => {
   "use strict";
 

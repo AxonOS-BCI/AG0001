@@ -1,5 +1,12 @@
 # AG0001 — Chronos Boundary Flight
 
+<p align="center">
+  <a href="https://axonos-bci.github.io/AG0001/">
+    <img src="https://img.shields.io/badge/RUN-PLAY%20GAME-c8a96a?style=for-the-badge&labelColor=08090c" alt="RUN — PLAY GAME">
+  </a>
+</p>
+
+
 [![CI](https://github.com/AxonOS-BCI/AG0001/actions/workflows/ci.yml/badge.svg)](https://github.com/AxonOS-BCI/AG0001/actions/workflows/ci.yml)
 
 **AG0001** is a browser-native AxonOS game prototype: a vertical ascent flight where the player crosses cognitive boundaries, avoids hostile interference, and keeps the neural control loop stable.
@@ -72,3 +79,10 @@ The CI workflow contains exactly 12 jobs:
 ## Version
 
 Current version: `0.1.0`
+
+
+## Privacy
+
+`no-telemetry`
+
+No analytics, no trackers, no cookies, no remote telemetry.
