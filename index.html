@@ -1,128 +1,817 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#050608" />
-  <meta name="description" content="AxonOS AG0001 Chronos Boundary Flight — a local-only browser game about cognitive sovereignty, typed intent, Privacy Vault integrity, and Zero Trust neural permissions." />
-  <title>AxonOS AG0001 — Chronos Boundary Flight</title>
-  <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./web/styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AxonOS AG0001 — Chronos Boundary Flight v2</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0a0f; font-family: 'Segoe UI', 'Roboto Mono', monospace; color: #e0e0e0; }
+#gameCanvas { display: block; width: 100%; height: 100%; }
+#ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+.hud { position: absolute; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.85; }
+#altitude { top: 16px; left: 16px; font-size: 24px; font-weight: 700; color: #00f0c8; text-shadow: 0 0 10px rgba(0,240,200,0.4); }
+#score { top: 16px; right: 16px; text-align: right; font-size: 18px; color: #ffd700; }
+#metrics { top: 56px; left: 16px; display: flex; flex-direction: column; gap: 4px; }
+.metric { display: flex; align-items: center; gap: 8px; }
+.metric-bar { width: 100px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+.metric-fill { height: 100%; border-radius: 2px; transition: width 0.3s, background 0.3s; }
+#shield-bar { bottom: 80px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; }
+.shield-dot { width: 32px; height: 6px; border-radius: 3px; background: rgba(0,200,255,0.2); border: 1px solid rgba(0,200,255,0.4); transition: all 0.3s; }
+.shield-dot.active { background: rgba(0,200,255,0.9); box-shadow: 0 0 8px rgba(0,200,255,0.6); }
+#controls-hint { bottom: 16px; left: 50%; transform: translateX(-50%); text-align: center; font-size: 10px; color: rgba(255,255,255,0.4); }
+#screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(5,5,10,0.92); pointer-events: all; transition: opacity 0.5s; z-index: 100; }
+#screen.hidden { opacity: 0; pointer-events: none; }
+#screen h1 { font-size: 42px; font-weight: 300; letter-spacing: 8px; margin-bottom: 8px; background: linear-gradient(135deg, #00f0c8, #0080ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+#screen .subtitle { font-size: 14px; color: rgba(255,255,255,0.5); margin-bottom: 32px; letter-spacing: 2px; }
+#screen .stats { margin: 16px 0; font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.8; }
+#screen button { margin-top: 24px; padding: 14px 48px; font-size: 16px; letter-spacing: 3px; text-transform: uppercase; background: linear-gradient(135deg, #00f0c8, #0080ff); border: none; border-radius: 4px; color: #000; font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+#screen button:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,240,200,0.3); }
+#screen button:active { transform: translateY(0); }
+.legend { display: flex; gap: 24px; margin: 24px 0; flex-wrap: wrap; justify-content: center; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: rgba(255,255,255,0.5); }
+.legend-icon { width: 16px; height: 16px; border-radius: 3px; }
+#mobile-controls { position: absolute; bottom: 0; left: 0; width: 100%; height: 120px; display: none; pointer-events: all; }
+.mobile-btn { position: absolute; bottom: 20px; width: 64px; height: 64px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.6); font-size: 24px; display: flex; align-items: center; justify-content: center; user-select: none; touch-action: none; }
+#btn-left { left: 20px; }
+#btn-right { left: 100px; }
+#btn-boost { right: 100px; background: rgba(0,240,200,0.12); border-color: rgba(0,240,200,0.3); }
+#btn-shield { right: 20px; background: rgba(0,150,255,0.12); border-color: rgba(0,150,255,0.3); }
+.mobile-btn:active { background: rgba(255,255,255,0.2); transform: scale(0.95); }
+@media (max-width: 768px) { #mobile-controls { display: block; } #controls-hint { display: none; } .hud { font-size: 10px; } #altitude { font-size: 18px; } #screen h1 { font-size: 28px; } }
+</style>
 </head>
 <body>
-  <main id="app" class="shell" data-version="0.1.0">
-    <section class="topbar" aria-label="AxonOS game header">
-      <div class="brand-block">
-        <div class="eyebrow">AxonOS-BCI / AG0001</div>
-        <h1>Chronos Boundary Flight</h1>
-      </div>
-      <div class="status-strip" aria-live="polite">
-        <div><span>MODE</span><strong id="modeLabel">INIT</strong></div>
-        <div><span>ALT</span><strong id="altitudeLabel">0 m</strong></div>
-        <div><span>HASH</span><strong id="hashLabel">00000000</strong></div>
-      </div>
-    </section>
 
-    <section class="layout">
-      <aside class="panel mission-panel">
-        <div class="panel-head">
-          <span>Mission</span>
-          <strong>OS for the Brain</strong>
-        </div>
-        <p class="mission-copy">
-          Fly the Chronos craft through the neural boundary. Pass only typed-intent gates. Avoid raw-signal leaks, latency spikes, adversarial permission probes, and unsafe stimulation waves.
-        </p>
-        <div class="objective-box" id="objectiveBox">
-          <strong>Objective</strong>
-          <span>Reach 9,000 m while keeping Boundary, Vault and Consent above critical levels.</span>
-        </div>
-        <div class="scenario-select">
-          <label for="scenario">Scenario</label>
-          <select id="scenario">
-            <option value="0">Clean Boundary / onboarding</option>
-            <option value="1">Raw Signal Storm</option>
-            <option value="2">Zero Trust Corridor</option>
-            <option value="3">Latency Spiral</option>
-            <option value="4">Grand Sovereignty Trial</option>
-          </select>
-        </div>
-        <div class="button-row">
-          <button id="startBtn" class="primary">Start Run</button>
-          <button id="pauseBtn">Pause</button>
-        </div>
-        <div class="button-row">
-          <button id="muteBtn" aria-pressed="true">Audio Off</button>
-          <button id="resetBtn">Reset</button>
-        </div>
-        <div class="controls-hint">
-          <strong>Controls</strong>
-          <span>←/→ or A/D steer · ↑/W boost · ↓/S shield brake · Space pause · Enter release when stable</span>
-        </div>
-      </aside>
+<canvas id="gameCanvas"></canvas>
 
-      <section class="game-frame" aria-label="Chronos flight field">
-        <canvas id="game" width="1280" height="1720" aria-label="Chronos Boundary Flight game canvas"></canvas>
-        <div class="overlay-card" id="introCard">
-          <div class="eyebrow">Local-only simulation / no telemetry</div>
-          <h2>Operate the Neural Boundary.</h2>
-          <p>
-            Chronos climbs like a precision aircraft through a hostile cognitive atmosphere. The engine is deterministic; the art is calm; the controls must feel exact. Your job is not to collect noise. Your job is to preserve sovereignty.
-          </p>
-          <ul>
-            <li>Green/gold gates = typed intent, safe to pass.</li>
-            <li>Red shards = raw signal exposure, avoid.</li>
-            <li>Violet waves = unsafe stimulation pressure, shield or dodge.</li>
-            <li>Silver probes = Zero Trust permission attacks.</li>
-          </ul>
-          <button id="introStart" class="primary large">Launch Chronos</button>
-        </div>
-        <div class="touch-controls" aria-label="Mobile controls">
-          <button id="touchLeft">◀</button>
-          <button id="touchBoost">BOOST</button>
-          <button id="touchShield">SHIELD</button>
-          <button id="touchRight">▶</button>
-        </div>
-      </section>
+<div id="ui">
+  <div class="hud" id="altitude">ALT 0 m</div>
+  <div class="hud" id="score">SCORE 0</div>
+  <div class="hud" id="metrics">
+    <div class="metric"><span>Boundary</span><div class="metric-bar"><div class="metric-fill" id="bar-boundary" style="width:100%;background:#00f0c8"></div></div></div>
+    <div class="metric"><span>Privacy</span><div class="metric-bar"><div class="metric-fill" id="bar-privacy" style="width:100%;background:#00f0c8"></div></div></div>
+    <div class="metric"><span>Consent</span><div class="metric-bar"><div class="metric-fill" id="bar-consent" style="width:100%;background:#00f0c8"></div></div></div>
+    <div class="metric"><span>Latency</span><div class="metric-bar"><div class="metric-fill" id="bar-latency" style="width:100%;background:#00f0c8"></div></div></div>
+  </div>
+  <div class="hud" id="shield-bar">
+    <div class="shield-dot active"></div><div class="shield-dot active"></div><div class="shield-dot active"></div>
+  </div>
+  <div class="hud" id="controls-hint">← → STEER  |  ↑ BOOST  |  ↓ SHIELD  |  SPACE PAUSE</div>
+</div>
 
-      <aside class="panel telemetry-panel">
-        <div class="panel-head">
-          <span>Telemetry</span>
-          <strong id="gradeLabel">READY</strong>
-        </div>
-        <div class="metrics" id="metrics"></div>
-        <div class="event-card">
-          <span class="eyebrow">Active Threat</span>
-          <strong id="threatLabel">No unresolved event</strong>
-          <p id="threatHint">Start the run. Keep the engine smooth and the boundary sealed.</p>
-        </div>
-        <div class="log" id="eventLog" aria-live="polite"></div>
-      </aside>
-    </section>
+<div id="mobile-controls">
+  <div class="mobile-btn" id="btn-left">←</div>
+  <div class="mobile-btn" id="btn-right">→</div>
+  <div class="mobile-btn" id="btn-boost">↑</div>
+  <div class="mobile-btn" id="btn-shield">🛡</div>
+</div>
 
-    <section class="footer-console">
-      <div>
-        <span>Run state</span>
-        <strong id="runStateLabel">standby</strong>
-      </div>
-      <div>
-        <span>Score</span>
-        <strong id="scoreLabel">0</strong>
-      </div>
-      <div>
-        <span>Intent packets</span>
-        <strong id="intentLabel">0</strong>
-      </div>
-      <div>
-        <span>Release</span>
-        <strong id="releaseLabel">locked</strong>
-      </div>
-    </section>
+<div id="screen">
+  <h1>CHRONOS</h1>
+  <div class="subtitle">Boundary Flight — AxonOS AG0001</div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-icon" style="background:#00f0c8"></div>Typed Intent (Safe)</div>
+    <div class="legend-item"><div class="legend-icon" style="background:#ff0040"></div>Raw Signal (Avoid)</div>
+    <div class="legend-item"><div class="legend-icon" style="background:#a020f0"></div>Stimulation Wave</div>
+    <div class="legend-item"><div class="legend-icon" style="background:#c0c0c0"></div>Zero Trust Probe</div>
+  </div>
+  <div class="stats" id="menu-stats">Best: 0 m | Runs: 0</div>
+  <button id="start-btn">INITIATE</button>
+</div>
 
-    <section class="legal-note">
-      <strong>Scope:</strong> educational browser game. No real neural data, no medical device claim, no clinical use, no telemetry, no backend, no wallet connection.
-    </section>
-  </main>
+<script>
+// ==========================================
+// AXONOS AG0001 — CHRONOS BOUNDARY FLIGHT v2
+// Single-file enhanced edition
+// ==========================================
 
-  <script src="./web/app.js" defer></script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const screenEl = document.getElementById('screen');
+const startBtn = document.getElementById('start-btn');
+
+// Audio context
+let audioCtx = null;
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+function playTone(freq, type, duration, vol = 0.1) {
+  if (!audioCtx) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+  gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+  osc.stop(audioCtx.currentTime + duration);
+}
+function playNoise(duration, vol = 0.05) {
+  if (!audioCtx) return;
+  const bufferSize = audioCtx.sampleRate * duration;
+  const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i/bufferSize, 2);
+  const source = audioCtx.createBufferSource();
+  source.buffer = buffer;
+  const gain = audioCtx.createGain();
+  gain.gain.value = vol;
+  source.connect(gain);
+  gain.connect(audioCtx.destination);
+  source.start();
+}
+
+// Game state
+let W, H, DPR;
+let gameState = 'menu'; // menu, playing, paused, gameover
+let frame = 0;
+let lastTime = 0;
+let score = 0;
+let altitude = 0;
+let targetAltitude = 9000;
+let speed = 1;
+let zone = 0;
+
+// Player
+const player = {
+  x: 0, y: 0, vx: 0, vy: 0,
+  angle: 0, bank: 0,
+  shield: 3, shieldActive: false, shieldTimer: 0, shieldCooldown: 0,
+  trail: [],
+  hp: { boundary: 100, privacy: 100, consent: 100, latency: 100 }
+};
+
+// Inputs
+const keys = {};
+let touchInput = { left: false, right: false, boost: false, shield: false };
+
+// Entities
+let obstacles = [];
+let particles = [];
+let gates = [];
+let stars = [];
+
+// Camera shake
+let shake = 0;
+
+// Stats
+let stats = { best: 0, runs: 0 };
+try {
+  const saved = localStorage.getItem('chronos_stats');
+  if (saved) stats = JSON.parse(saved);
+} catch(e) {}
+
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth;
+  H = window.innerHeight;
+  canvas.width = W * DPR;
+  canvas.height = H * DPR;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  if (gameState === 'menu') initStars();
+}
+window.addEventListener('resize', resize);
+
+// Input handlers
+window.addEventListener('keydown', e => {
+  keys[e.code] = true;
+  if (e.code === 'Space') {
+    if (gameState === 'playing') gameState = 'paused';
+    else if (gameState === 'paused') gameState = 'playing';
+  }
+  if (e.code === 'Enter' && gameState === 'menu') startGame();
+});
+window.addEventListener('keyup', e => keys[e.code] = false);
+
+// Touch controls
+function setupTouch(id, key) {
+  const el = document.getElementById(id);
+  el.addEventListener('touchstart', e => { e.preventDefault(); touchInput[key] = true; });
+  el.addEventListener('touchend', e => { e.preventDefault(); touchInput[key] = false; });
+  el.addEventListener('mousedown', e => { touchInput[key] = true; });
+  el.addEventListener('mouseup', e => { touchInput[key] = false; });
+}
+setupTouch('btn-left', 'left');
+setupTouch('btn-right', 'right');
+setupTouch('btn-boost', 'boost');
+setupTouch('btn-shield', 'shield');
+
+// Stars background
+function initStars() {
+  stars = [];
+  for (let i = 0; i < 150; i++) {
+    stars.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      size: Math.random() * 2 + 0.5,
+      speed: Math.random() * 0.5 + 0.1,
+      brightness: Math.random()
+    });
+  }
+}
+
+// Particle system
+function spawnParticles(x, y, color, count, speed = 2) {
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const vel = Math.random() * speed + 1;
+    particles.push({
+      x, y,
+      vx: Math.cos(angle) * vel,
+      vy: Math.sin(angle) * vel,
+      life: 1,
+      decay: Math.random() * 0.03 + 0.01,
+      color,
+      size: Math.random() * 3 + 1
+    });
+  }
+}
+
+// Obstacle types
+const OBSTACLE_TYPES = {
+  SHARD: { color: '#ff0040', radius: 14, damage: 15, score: 0, label: 'RAW' },
+  WAVE: { color: '#a020f0', radius: 22, damage: 10, score: 0, label: 'WAVE', oscillate: true },
+  PROBE: { color: '#c0c0c0', radius: 12, damage: 12, score: 0, label: 'PROBE', tracking: 0.3 },
+  GATE: { color: '#00f0c8', radius: 30, damage: 0, score: 100, label: 'INTENT', gate: true },
+  GATE_GOLD: { color: '#ffd700', radius: 24, damage: 0, score: 250, label: 'SOVEREIGN', gate: true, rare: true }
+};
+
+function spawnObstacle() {
+  const types = ['SHARD', 'SHARD', 'WAVE', 'PROBE', 'GATE', 'GATE'];
+  if (Math.random() < 0.05) types.push('GATE_GOLD');
+
+  // Zone-based difficulty
+  const zoneMult = 1 + zone * 0.3;
+  const typeKey = types[Math.floor(Math.random() * types.length)];
+  const type = OBSTACLE_TYPES[typeKey];
+
+  const obs = {
+    x: Math.random() * (W - 100) + 50,
+    y: -50,
+    ...type,
+    type: typeKey,
+    phase: Math.random() * Math.PI * 2,
+    passed: false
+  };
+
+  if (type.gate) {
+    obs.w = 80;
+    obs.h = 12;
+  }
+
+  obstacles.push(obs);
+}
+
+function updateObstacles(dt) {
+  const zoneSpeed = 1 + zone * 0.2;
+
+  for (let i = obstacles.length - 1; i >= 0; i--) {
+    const o = obstacles[i];
+    o.y += (2 + speed) * zoneSpeed * dt * 60;
+
+    if (o.oscillate) {
+      o.x += Math.sin(frame * 0.03 + o.phase) * 1.5;
+    }
+    if (o.tracking && !o.gate) {
+      const dx = player.x - o.x;
+      o.x += dx * o.tracking * 0.02;
+    }
+
+    // Collision
+    let hit = false;
+    if (o.gate) {
+      if (Math.abs(player.x - o.x) < o.w/2 + 10 && Math.abs(player.y - o.y) < o.h/2 + 20) {
+        if (!o.passed) {
+          o.passed = true;
+          score += o.score;
+          playTone(880, 'sine', 0.1, 0.08);
+          spawnParticles(o.x, o.y, o.color, 8, 1);
+          // Heal slightly
+          player.hp.boundary = Math.min(100, player.hp.boundary + 5);
+        }
+      }
+    } else {
+      const dx = player.x - o.x;
+      const dy = player.y - o.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+
+      if (dist < o.radius + 12) {
+        if (player.shieldActive) {
+          // Shield absorbs
+          spawnParticles(o.x, o.y, '#00c8ff', 12, 3);
+          playTone(220, 'square', 0.15, 0.06);
+          obstacles.splice(i, 1);
+          continue;
+        } else {
+          hit = true;
+          shake = 8;
+          playTone(110, 'sawtooth', 0.3, 0.1);
+          playNoise(0.2, 0.08);
+          spawnParticles(o.x, o.y, o.color, 15, 4);
+
+          if (o.type === 'SHARD') player.hp.privacy -= o.damage;
+          else if (o.type === 'WAVE') player.hp.consent -= o.damage;
+          else if (o.type === 'PROBE') player.hp.latency -= o.damage;
+          player.hp.boundary -= o.damage * 0.5;
+
+          obstacles.splice(i, 1);
+          if (navigator.vibrate) navigator.vibrate(50);
+          continue;
+        }
+      }
+    }
+
+    if (o.y > H + 50) obstacles.splice(i, 1);
+  }
+}
+
+function drawObstacles() {
+  for (const o of obstacles) {
+    ctx.save();
+    ctx.translate(o.x, o.y);
+
+    if (o.gate) {
+      // Draw gate
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = o.color;
+      ctx.fillStyle = o.color;
+      ctx.fillRect(-o.w/2, -o.h/2, o.w, o.h);
+      ctx.shadowBlur = 0;
+
+      // Pillars
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.fillRect(-o.w/2 - 4, -o.h/2 - 8, 8, 16);
+      ctx.fillRect(o.w/2 - 4, -o.h/2 - 8, 8, 16);
+
+      ctx.fillStyle = '#fff';
+      ctx.font = '10px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(o.label, 0, -12);
+    } else {
+      // Draw obstacle
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = o.color;
+      ctx.fillStyle = o.color;
+
+      if (o.type === 'SHARD') {
+        ctx.beginPath();
+        for (let i = 0; i < 5; i++) {
+          const angle = (i / 5) * Math.PI * 2 + frame * 0.02;
+          const r = o.radius * (0.7 + Math.random() * 0.3);
+          const x = Math.cos(angle) * r;
+          const y = Math.sin(angle) * r;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.fill();
+      } else if (o.type === 'WAVE') {
+        ctx.beginPath();
+        ctx.arc(0, 0, o.radius, 0, Math.PI * 2);
+        ctx.strokeStyle = o.color;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(0, 0, o.radius * 0.6, frame * 0.05, frame * 0.05 + Math.PI * 1.5);
+        ctx.strokeStyle = 'rgba(160,32,240,0.5)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      } else if (o.type === 'PROBE') {
+        ctx.beginPath();
+        ctx.moveTo(0, -o.radius);
+        ctx.lineTo(o.radius, o.radius);
+        ctx.lineTo(-o.radius, o.radius);
+        ctx.closePath();
+        ctx.fill();
+        // Eye
+        ctx.fillStyle = '#ff0040';
+        ctx.beginPath();
+        ctx.arc(0, 0, 4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.shadowBlur = 0;
+
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.font = '9px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(o.label, 0, o.radius + 12);
+    }
+    ctx.restore();
+  }
+}
+
+// Player functions
+function updatePlayer(dt) {
+  const accel = 0.8;
+  const maxSpeed = 6;
+  const friction = 0.92;
+
+  // Input
+  let inputX = 0;
+  let inputBoost = false;
+  let inputShield = false;
+
+  if (keys['ArrowLeft'] || keys['KeyA'] || touchInput.left) inputX -= 1;
+  if (keys['ArrowRight'] || keys['KeyD'] || touchInput.right) inputX += 1;
+  if (keys['ArrowUp'] || keys['KeyW'] || touchInput.boost) inputBoost = true;
+  if (keys['ArrowDown'] || keys['KeyS'] || touchInput.shield) inputShield = true;
+
+  // Physics
+  player.vx += inputX * accel;
+  player.vx *= friction;
+  player.x += player.vx * dt * 60;
+
+  // Banking
+  const targetBank = -player.vx * 0.15;
+  player.bank += (targetBank - player.bank) * 0.1;
+
+  // Bounds
+  player.x = Math.max(30, Math.min(W - 30, player.x));
+
+  // Boost
+  if (inputBoost) {
+    speed = Math.min(speed + 0.02, 3);
+    altitude += 2 * dt * 60;
+    // Engine trail
+    if (frame % 3 === 0) {
+      particles.push({
+        x: player.x + (Math.random() - 0.5) * 6,
+        y: player.y + 20,
+        vx: (Math.random() - 0.5) * 2,
+        vy: 2 + Math.random() * 2,
+        life: 1,
+        decay: 0.04,
+        color: `hsl(${180 + Math.random() * 40}, 100%, 60%)`,
+        size: 2 + Math.random() * 3
+      });
+    }
+  } else {
+    speed = Math.max(speed - 0.01, 1);
+    altitude += 0.5 * dt * 60;
+  }
+
+  // Shield
+  if (inputShield && player.shield > 0 && player.shieldCooldown <= 0 && !player.shieldActive) {
+    player.shieldActive = true;
+    player.shieldTimer = 120; // 2 seconds at 60fps
+    player.shield--;
+    player.shieldCooldown = 300; // 5 seconds
+    playTone(440, 'sine', 0.3, 0.1);
+    spawnParticles(player.x, player.y, '#00c8ff', 20, 2);
+  }
+
+  if (player.shieldActive) {
+    player.shieldTimer -= dt * 60;
+    if (player.shieldTimer <= 0) player.shieldActive = false;
+  }
+  if (player.shieldCooldown > 0) player.shieldCooldown -= dt * 60;
+
+  // Trail
+  player.trail.push({ x: player.x, y: player.y + 16, life: 1 });
+  if (player.trail.length > 20) player.trail.shift();
+  for (const t of player.trail) t.life -= 0.05;
+  player.trail = player.trail.filter(t => t.life > 0);
+
+  // Zone progression
+  zone = Math.min(4, Math.floor(altitude / 1800));
+
+  // Latency pressure increases with speed
+  player.hp.latency -= (speed - 1) * 0.02;
+
+  // Clamp HP
+  for (const key in player.hp) {
+    player.hp[key] = Math.max(0, Math.min(100, player.hp[key]));
+  }
+
+  // Check death
+  if (player.hp.boundary <= 0 || player.hp.privacy <= 0 || player.hp.consent <= 0 || player.hp.latency <= 0) {
+    gameOver();
+  }
+
+  // Win condition
+  if (altitude >= targetAltitude) {
+    victory();
+  }
+}
+
+function drawPlayer() {
+  ctx.save();
+  ctx.translate(player.x, player.y);
+  ctx.rotate(player.bank);
+
+  // Shield effect
+  if (player.shieldActive) {
+    ctx.beginPath();
+    ctx.arc(0, 0, 28, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(0,200,255,${0.3 + Math.sin(frame * 0.2) * 0.2})`;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(0, 0, 32, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(0,200,255,${0.1 + Math.sin(frame * 0.15) * 0.1})`;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // Trail
+  for (const t of player.trail) {
+    ctx.globalAlpha = t.life * 0.4;
+    ctx.fillStyle = '#00f0c8';
+    ctx.fillRect(t.x - player.x - 2, t.y - player.y, 4, 4);
+  }
+  ctx.globalAlpha = 1;
+
+  // Ship body
+  ctx.shadowBlur = 20;
+  ctx.shadowColor = '#00f0c8';
+  ctx.fillStyle = '#e0e0e0';
+
+  // Main fuselage
+  ctx.beginPath();
+  ctx.moveTo(0, -24);
+  ctx.lineTo(8, 8);
+  ctx.lineTo(0, 16);
+  ctx.lineTo(-8, 8);
+  ctx.closePath();
+  ctx.fill();
+
+  // Wings
+  ctx.fillStyle = '#00f0c8';
+  ctx.beginPath();
+  ctx.moveTo(0, -4);
+  ctx.lineTo(20, 12);
+  ctx.lineTo(8, 16);
+  ctx.lineTo(0, 8);
+  ctx.closePath();
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(0, -4);
+  ctx.lineTo(-20, 12);
+  ctx.lineTo(-8, 16);
+  ctx.lineTo(0, 8);
+  ctx.closePath();
+  ctx.fill();
+
+  // Cockpit
+  ctx.fillStyle = '#0080ff';
+  ctx.beginPath();
+  ctx.ellipse(0, -8, 3, 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Engine glow
+  ctx.shadowBlur = 30;
+  ctx.shadowColor = '#00f0c8';
+  ctx.fillStyle = `rgba(0,240,200,${0.6 + Math.random() * 0.4})`;
+  ctx.beginPath();
+  ctx.arc(0, 18, 4 + Math.random() * 2, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.shadowBlur = 0;
+  ctx.restore();
+}
+
+// Particles
+function updateParticles(dt) {
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx * dt * 60;
+    p.y += p.vy * dt * 60;
+    p.life -= p.decay * dt * 60;
+    if (p.life <= 0) particles.splice(i, 1);
+  }
+}
+
+function drawParticles() {
+  for (const p of particles) {
+    ctx.globalAlpha = p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
+  }
+  ctx.globalAlpha = 1;
+}
+
+// Background
+function drawBackground() {
+  // Clear
+  ctx.fillStyle = '#0a0a0f';
+  ctx.fillRect(0, 0, W, H);
+
+  // Stars
+  for (const s of stars) {
+    s.y += s.speed * (1 + speed * 0.5);
+    if (s.y > H) { s.y = 0; s.x = Math.random() * W; }
+    ctx.globalAlpha = s.brightness * (0.5 + Math.sin(frame * 0.01 + s.x) * 0.3);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(s.x, s.y, s.size, s.size);
+  }
+  ctx.globalAlpha = 1;
+
+  // Grid lines (perspective)
+  ctx.strokeStyle = 'rgba(0,240,200,0.05)';
+  ctx.lineWidth = 1;
+  const gridOffset = (altitude * 2) % 100;
+  for (let i = 0; i < W; i += 80) {
+    ctx.beginPath();
+    ctx.moveTo(i, 0);
+    ctx.lineTo(i + (i - W/2) * 0.3, H);
+    ctx.stroke();
+  }
+  for (let i = -100; i < H + 100; i += 100) {
+    const y = i - gridOffset;
+    if (y < 0 || y > H) continue;
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(W, y);
+    ctx.stroke();
+  }
+
+  // Zone indicator
+  const zoneNames = ['STRATOSPHERE', 'MESOSPHERE', 'THERMOSPHERE', 'EXOSPHERE', 'BOUNDARY'];
+  ctx.fillStyle = 'rgba(255,255,255,0.08)';
+  ctx.font = 'bold 80px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(zoneNames[zone], W/2, H/2);
+}
+
+// HUD update
+function updateHUD() {
+  document.getElementById('altitude').textContent = `ALT ${Math.floor(altitude)} m`;
+  document.getElementById('score').textContent = `SCORE ${score}`;
+
+  document.getElementById('bar-boundary').style.width = player.hp.boundary + '%';
+  document.getElementById('bar-boundary').style.background = player.hp.boundary > 50 ? '#00f0c8' : player.hp.boundary > 25 ? '#ffd700' : '#ff0040';
+
+  document.getElementById('bar-privacy').style.width = player.hp.privacy + '%';
+  document.getElementById('bar-privacy').style.background = player.hp.privacy > 50 ? '#00f0c8' : player.hp.privacy > 25 ? '#ffd700' : '#ff0040';
+
+  document.getElementById('bar-consent').style.width = player.hp.consent + '%';
+  document.getElementById('bar-consent').style.background = player.hp.consent > 50 ? '#00f0c8' : player.hp.consent > 25 ? '#ffd700' : '#ff0040';
+
+  document.getElementById('bar-latency').style.width = player.hp.latency + '%';
+  document.getElementById('bar-latency').style.background = player.hp.latency > 50 ? '#00f0c8' : player.hp.latency > 25 ? '#ffd700' : '#ff0040';
+
+  // Shield dots
+  const dots = document.querySelectorAll('.shield-dot');
+  for (let i = 0; i < 3; i++) {
+    dots[i].classList.toggle('active', i < player.shield);
+  }
+}
+
+// Screens
+function showScreen(html, buttonText, callback) {
+  screenEl.innerHTML = html + `<button id="action-btn">${buttonText}</button>`;
+  screenEl.classList.remove('hidden');
+  document.getElementById('action-btn').addEventListener('click', () => {
+    initAudio();
+    callback();
+  });
+}
+
+function hideScreen() {
+  screenEl.classList.add('hidden');
+}
+
+function gameOver() {
+  gameState = 'gameover';
+  playTone(110, 'sawtooth', 0.8, 0.15);
+  playNoise(0.5, 0.1);
+
+  stats.runs++;
+  if (altitude > stats.best) stats.best = Math.floor(altitude);
+  try { localStorage.setItem('chronos_stats', JSON.stringify(stats)); } catch(e) {}
+
+  const html = `
+    <h1 style="color:#ff0040">BREACH</h1>
+    <div class="subtitle">Boundary Integrity Compromised</div>
+    <div class="stats">
+      Altitude: ${Math.floor(altitude)} m<br>
+      Score: ${score}<br>
+      Best: ${stats.best} m<br>
+      Runs: ${stats.runs}
+    </div>
+  `;
+  showScreen(html, 'REBOOT', startGame);
+}
+
+function victory() {
+  gameState = 'victory';
+  playTone(880, 'sine', 0.5, 0.1);
+  setTimeout(() => playTone(1100, 'sine', 0.5, 0.1), 100);
+  setTimeout(() => playTone(1320, 'sine', 0.8, 0.15), 200);
+
+  stats.runs++;
+  if (altitude > stats.best) stats.best = Math.floor(altitude);
+  try { localStorage.setItem('chronos_stats', JSON.stringify(stats)); } catch(e) {}
+
+  const html = `
+    <h1 style="background:linear-gradient(135deg,#ffd700,#ff8c00);-webkit-background-clip:text;-webkit-text-fill-color:transparent">SOVEREIGNTY</h1>
+    <div class="subtitle">Boundary Preserved — Release Authorized</div>
+    <div class="stats">
+      Final Altitude: ${Math.floor(altitude)} m<br>
+      Score: ${score}<br>
+      Rating: ${score > 5000 ? '★★★★★' : score > 3000 ? '★★★★☆' : score > 1500 ? '★★★☆☆' : '★★☆☆☆'}
+    </div>
+  `;
+  showScreen(html, 'REPLAY', startGame);
+}
+
+// Main game loop
+function startGame() {
+  gameState = 'playing';
+  score = 0;
+  altitude = 0;
+  zone = 0;
+  speed = 1;
+  obstacles = [];
+  particles = [];
+  player.x = W/2;
+  player.y = H - 120;
+  player.vx = 0;
+  player.vy = 0;
+  player.bank = 0;
+  player.shield = 3;
+  player.shieldActive = false;
+  player.shieldTimer = 0;
+  player.shieldCooldown = 0;
+  player.hp = { boundary: 100, privacy: 100, consent: 100, latency: 100 };
+  player.trail = [];
+  shake = 0;
+  hideScreen();
+  initAudio();
+}
+
+function loop(timestamp) {
+  const dt = Math.min((timestamp - lastTime) / 1000, 0.05);
+  lastTime = timestamp;
+  frame++;
+
+  if (gameState === 'playing') {
+    // Spawn obstacles
+    const spawnRate = Math.max(20, 60 - zone * 8);
+    if (frame % Math.floor(spawnRate) === 0) spawnObstacle();
+
+    updatePlayer(dt);
+    updateObstacles(dt);
+    updateParticles(dt);
+    updateHUD();
+
+    // Camera shake decay
+    if (shake > 0) shake *= 0.9;
+    if (shake < 0.5) shake = 0;
+  }
+
+  // Render
+  ctx.save();
+  if (shake > 0) {
+    ctx.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
+  }
+
+  drawBackground();
+
+  if (gameState === 'playing' || gameState === 'paused') {
+    drawObstacles();
+    drawPlayer();
+    drawParticles();
+  }
+
+  // Pause overlay
+  if (gameState === 'paused') {
+    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 32px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('PAUSED', W/2, H/2);
+    ctx.font = '14px monospace';
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.fillText('Press SPACE to resume', W/2, H/2 + 40);
+  }
+
+  ctx.restore();
+
+  requestAnimationFrame(loop);
+}
+
+// Init
+resize();
+initStars();
+player.x = W/2;
+player.y = H - 120;
+
+// Menu stats
+document.getElementById('menu-stats').textContent = `Best: ${stats.best} m | Runs: ${stats.runs}`;
+
+startBtn.addEventListener('click', () => {
+  initAudio();
+  startGame();
+});
+
+requestAnimationFrame(loop);
+</script>
 </body>
 </html>
