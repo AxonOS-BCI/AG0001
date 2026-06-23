@@ -11,6 +11,13 @@
 
 **AG0001** is a browser-native AxonOS game prototype: a vertical ascent flight where the player crosses cognitive boundaries, avoids hostile interference, and keeps the neural control loop stable.
 
+
+## Chronos Boundary Flight v3
+
+Current playable build: `0.3.0`.
+
+V3 adds menu, loadouts, difficulty, shield, boost, minimap, mobile controls, persistent pilot log, four AxonOS metrics, and a static zero-telemetry runtime.
+
 ## Run
 
 ```bash
