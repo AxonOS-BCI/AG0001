@@ -20,7 +20,9 @@
 
 In the browser: **[axonos-bci.github.io/AG0001](https://axonos-bci.github.io/AG0001/)**.
 
-Locally — it is a single static page, no build step, **no-telemetry**, no network calls:
+## Run
+
+Locally — a single static page, no build step, **no-telemetry**, no network calls:
 
 ```bash
 git clone https://github.com/AxonOS-BCI/AG0001.git
