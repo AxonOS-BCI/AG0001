@@ -2,7 +2,7 @@
 
 ## v0.7.0 — 2026-06-23
 
-- Consolidated to a single runtime (`src/main.js`); removed the unused legacy
+- Consolidated to a single runtime (`index.html (inline)`); removed the unused legacy
   `web/app.js` / `web/styles.css` duplicate.
 - Unified version to `0.7.0` across VERSION, package.json, manifest, README,
   index.html, release notes, and docs (was a 0.1.0 / 0.3.1 / v3 / v3.1 mix).
