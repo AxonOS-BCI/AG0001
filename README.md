@@ -1,18 +1,18 @@
 # AG0001 — Chronos Boundary Flight v0.9.0
 
-[![CI](https://github.com/AxonOS-BCI/AG0001/actions/workflows/ci.yml/badge.svg)](https://github.com/AxonOS-BCI/AG0001/actions/workflows/ci.yml)
+Browser-native AxonOS arcade game.
 
-Browser-native AxonOS arcade game: Chronos Boundary Flight.
+## Play v0.9.0
 
-A vertical ascent game where the pilot protects Boundary, Privacy, Consent, and Latency while flying through hostile interference and release gates.
+https://axonos-bci.github.io/AG0001/AG0001_v0.9.0.html?v=0.9.0
 
-## Play
+## Source file
 
-https://axonos-bci.github.io/AG0001/?v=0.9.0
+https://github.com/AxonOS-BCI/AG0001/blob/main/AG0001_v0.9.0.html
 
-## Run
+## Local run
 
-Local run serves the current `index.html` from this repository.
+Clone:
 
     git clone https://github.com/AxonOS-BCI/AG0001.git
     cd AG0001
@@ -20,31 +20,14 @@ Local run serves the current `index.html` from this repository.
 
 Open:
 
-    http://127.0.0.1:8080/?v=0.9.0
-
-If an old build is cached, open:
-
-    http://127.0.0.1:8080/?fresh=1&v=0.9.0
-
-## Verify
-
-    bash scripts/verify.sh
-
-## Controls
-
-- Move: Left / Right or A / D
-- Boost: Up or W
-- Shield: S
-- Mobile: touch controls appear automatically
+    http://127.0.0.1:8080/AG0001_v0.9.0.html
 
 ## Scope
 
-Educational browser game. No neural data. No sensors. No clinical claims. No telemetry.
+Educational browser game.
+
+No neural data. No sensors. No telemetry. No medical or clinical claims.
 
 ## Version
 
-Current version: `0.9.0`
-
-## License
-
-See [LICENSE](LICENSE).
+Current version: 0.9.0
