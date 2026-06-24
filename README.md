@@ -2,16 +2,16 @@
 
 # ⟁ &nbsp;AG0001 — Chronos Boundary Flight
 
-**A browser-native AxonOS arcade.** &nbsp;One file. &nbsp;Zero network. &nbsp;Zero telemetry.
+**A browser-native AxonOS arcade — Elite Edition.** &nbsp;One file. &nbsp;Zero network. &nbsp;Zero telemetry.
 
 [![CI](https://github.com/AxonOS-BCI/AG0001/actions/workflows/ci.yml/badge.svg)](https://github.com/AxonOS-BCI/AG0001/actions/workflows/ci.yml)
-[![version](https://img.shields.io/badge/version-0.9.0-1f6feb)](https://github.com/AxonOS-BCI/AG0001/releases)
+[![version](https://img.shields.io/badge/version-1.1.0-1f6feb)](https://github.com/AxonOS-BCI/AG0001/releases)
 [![license](https://img.shields.io/badge/license-MIT-3fb950)](LICENSE)
 [![runtime](https://img.shields.io/badge/runtime-single--file_HTML-8957e5)](index.html)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#not-a-medical-device)
 [![scope](https://img.shields.io/badge/scope-educational_artifact-d29922)](#not-a-medical-device)
 
-### [▶ &nbsp;Play in your browser](https://axonos-bci.github.io/AG0001/?v=0.9.0)
+### [▶ &nbsp;Play in your browser](https://axonos-bci.github.io/AG0001/?v=1.1.0)
 
 *Educational / brand artifact — **not a medical device**. No neural data, no sensors, no clinical claims.*
 
@@ -21,7 +21,15 @@
 
 ## Overview
 
-A single self-contained `index.html` — HTML, CSS and inline JavaScript, with **no build step, no bundler, no dependencies, and no network calls**. You fly a sovereign signal upward through a hostile boundary, dodging hazards while four integrity meters drain and recover. It dramatises AxonOS ideas as an arcade loop you can read in one file.
+A single self-contained `index.html` — HTML, CSS and inline JavaScript, with **no build step, no bundler, no dependencies, and no network calls**. You pilot a sovereign signal upward through a hostile boundary field, dodging hazards while four integrity meters drain and recover. Everything — engine, cinematics, UI — lives in one readable file.
+
+## What's new in v1.1.0 — Elite Edition
+
+- **New flight engine** — momentum-based handling with smoothed steering and tilt.
+- **Pads removed.** Control is now **drag to steer**, **tap = shield**, **double-tap = boost** — plus full keyboard support.
+- **Premium UI** — glassmorphic panels, an animated four-meter HUD (Boundary / Privacy / Consent / Latency), and a live minimap.
+- **Cinematics** — animated intro, zone-transition banners, slow-motion beats on near-misses and shields, and win/defeat sequences with particles and screen shake.
+- **Optional Dogecoin support** — a gentle support modal appears after your third run. Nothing is gated; the whole game stays free.
 
 ## The AxonOS metaphor
 
@@ -31,8 +39,8 @@ The four HUD meters mirror real concerns from the AxonOS architecture — as a *
 |-----------|-------------|-------------------------------|
 | **Boundary** | Hull integrity vs. hazards | The hard boundary between user and system |
 | **Privacy** | Drains in exposed zones | On-device-only data, nothing leaves the edge |
-| **Consent** | Gates your abilities | Consent enforced *below* the coupling engine |
-| **Latency** | Punishes slow reactions | Hard real-time deadlines |
+| **Consent** | Fuels boost & shield | Consent enforced *below* the coupling engine |
+| **Latency** | Spikes under stress | Hard real-time deadlines |
 
 The real, replay-verified engines live in [`axonos-boundary-run-v64`](https://github.com/AxonOS-BCI/axonos-boundary-run-v64) and [`axonos-e2e-demo`](https://github.com/AxonOS-org/axonos-e2e-demo). This repo is the playful front door, not the engineering.
 
@@ -40,9 +48,9 @@ The real, replay-verified engines live in [`axonos-boundary-run-v64`](https://gi
 
 | Action | Keyboard | Touch |
 |--------|----------|-------|
-| Move | `←` `→` &nbsp;/&nbsp; `A` `D` | left / right pads |
-| Boost | `↑` &nbsp;/&nbsp; `W` | ↑ pad |
-| Shield | `↓` &nbsp;/&nbsp; `S` | SHIELD pad |
+| Steer | `←` `→` &nbsp;/&nbsp; `A` `D` | **drag** anywhere |
+| Boost | `↑` &nbsp;/&nbsp; `W` | **double-tap** |
+| Shield | `↓` &nbsp;/&nbsp; `S` &nbsp;/&nbsp; `Space` | **tap** |
 
 ## Run
 
@@ -54,13 +62,13 @@ cd AG0001
 python3 -m http.server 8080
 ```
 
-Open `http://127.0.0.1:8080`. &nbsp;(Or just [play the hosted build](https://axonos-bci.github.io/AG0001/?v=0.9.0).)
+Open `http://127.0.0.1:8080`. &nbsp;(Or just [play the hosted build](https://axonos-bci.github.io/AG0001/?v=1.1.0).)
 
 ## Architecture
 
-- **Single file.** Everything — markup, styling, game — lives in `index.html`.
-- **Deterministic core.** xorshift64\* PRNG (BigInt) with an integer fallback, so runs are reproducible.
-- **Canvas 2D loop** with a fixed HUD, minimap, and combined pointer + keyboard input.
+- **Single file.** Markup, styling, engine, cinematics — all in `index.html`.
+- **Deterministic core.** xorshift PRNG (BigInt) with an integer fallback.
+- **Canvas 2D loop** with momentum physics, particles, parallax, and screen shake.
 - **Visible error reporter.** Any runtime error surfaces as an on-screen banner — never a blank screen.
 - **Local only.** No requests of any kind; high scores live in `localStorage` and are never transmitted.
 
@@ -81,7 +89,7 @@ AG0001 is an **educational and brand artifact**. It contains no neural interface
 
 ## Version
 
-Current version: `0.9.0`
+Current version: `1.1.0`
 
 ## Related
 

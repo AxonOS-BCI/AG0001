@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.1.0 — Elite Edition
+- New momentum-based flight engine and smoother handling.
+- Removed on-screen control pads; control is drag-to-steer + tap (shield) + double-tap (boost), plus keyboard.
+- Premium glass UI, animated four-meter HUD (Boundary / Privacy / Consent / Latency), minimap.
+- Cinematics: animated intro, zone-transition banners, slow-motion beats, win/defeat sequences, particles, screen shake.
+- Optional Dogecoin support modal after the third run (nothing is gated).
+- CI: fixed job 04 (inline-script extraction) and consolidated to the single-file runtime.
+
+
 ## v0.7.0 — 2026-06-23
 
 - Consolidated to a single runtime (`index.html (inline)`); removed the unused legacy

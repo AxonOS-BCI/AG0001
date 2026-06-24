@@ -55,7 +55,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Node syntax check
-        run: node --check index.html (inline)
+        run: |
+          awk '/<script>/{f=1;next} /<\/script>/{f=0} f' index.html > inline.js
+          node --check inline.js
 
   static_runtime_smoke:
     name: 05 static runtime smoke
