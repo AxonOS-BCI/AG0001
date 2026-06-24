@@ -1,11 +1,12 @@
 {
   "name": "axonos-ag0001-chronos-boundary-flight",
-  "version": "0.7.0",
+  "version": "0.9.0",
   "private": true,
   "description": "Local-only AxonOS browser game about cognitive sovereignty and typed intent.",
   "scripts": {
-    "check": "node --check web/app.js",
-    "verify": "bash scripts/verify.sh",
-    "serve": "python3 -m http.server 8080"
+    "serve": "python3 -m http.server 8080",
+    "start": "python3 -m http.server 8080",
+    "check": "node -e \"const fs=require('fs');const s=fs.readFileSync('index.html','utf8');const a=s.indexOf('<script>')+'<script>'.length;const b=s.lastIndexOf('</script>');if(a<8||b<a)throw new Error('script block missing');fs.writeFileSync('.inline-check.js',s.slice(a,b));\" && node --check .inline-check.js && rm -f .inline-check.js",
+    "verify": "bash scripts/verify.sh"
   }
 }
