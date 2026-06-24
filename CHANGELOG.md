@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.2.0 — Credits & Hangar
+- New credits economy: collect golden coin pickups mid-flight and earn run bonuses (altitude, score, combo, win).
+- Hangar unlocks: spend credits to unlock the Velocity / Fortress / Sovereign loadouts; balances persist locally.
+- Pause anytime (⏸ button or Esc / P) with Resume / Restart / Menu.
+- UX: credit balance in the Hangar, +credits count-up on results, coin magnet, clearer onboarding.
+- Stability: fixed a zone-index crash (`Cannot read properties of undefined (reading 'n')`); update/draw now run inside guarded try/catch.
+
+
 ## v1.1.0 — Elite Edition
 - New momentum-based flight engine and smoother handling.
 - Removed on-screen control pads; control is drag-to-steer + tap (shield) + double-tap (boost), plus keyboard.

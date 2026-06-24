@@ -5,13 +5,13 @@
 **A browser-native AxonOS arcade — Elite Edition.** &nbsp;One file. &nbsp;Zero network. &nbsp;Zero telemetry.
 
 [![CI](https://github.com/AxonOS-BCI/AG0001/actions/workflows/ci.yml/badge.svg)](https://github.com/AxonOS-BCI/AG0001/actions/workflows/ci.yml)
-[![version](https://img.shields.io/badge/version-1.1.0-1f6feb)](https://github.com/AxonOS-BCI/AG0001/releases)
+[![version](https://img.shields.io/badge/version-1.2.0-1f6feb)](https://github.com/AxonOS-BCI/AG0001/releases)
 [![license](https://img.shields.io/badge/license-MIT-3fb950)](LICENSE)
 [![runtime](https://img.shields.io/badge/runtime-single--file_HTML-8957e5)](index.html)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#not-a-medical-device)
 [![scope](https://img.shields.io/badge/scope-educational_artifact-d29922)](#not-a-medical-device)
 
-### [▶ &nbsp;Play in your browser](https://axonos-bci.github.io/AG0001/?v=1.1.0)
+### [▶ &nbsp;Play in your browser](https://axonos-bci.github.io/AG0001/?v=1.2.0)
 
 *Educational / brand artifact — **not a medical device**. No neural data, no sensors, no clinical claims.*
 
@@ -21,15 +21,15 @@
 
 ## Overview
 
-A single self-contained `index.html` — HTML, CSS and inline JavaScript, with **no build step, no bundler, no dependencies, and no network calls**. You pilot a sovereign signal upward through a hostile boundary field, dodging hazards while four integrity meters drain and recover. Everything — engine, cinematics, UI — lives in one readable file.
+A single self-contained `index.html` — HTML, CSS and inline JavaScript, with **no build step, no bundler, no dependencies, and no network calls**. Pilot a sovereign signal upward through a hostile boundary field, collect data shards, earn credits, and dodge hazards while four integrity meters drain and recover.
 
-## What's new in v1.1.0 — Elite Edition
+## What's new in v1.2.0 — Credits & Hangar
 
-- **New flight engine** — momentum-based handling with smoothed steering and tilt.
-- **Pads removed.** Control is now **drag to steer**, **tap = shield**, **double-tap = boost** — plus full keyboard support.
-- **Premium UI** — glassmorphic panels, an animated four-meter HUD (Boundary / Privacy / Consent / Latency), and a live minimap.
-- **Cinematics** — animated intro, zone-transition banners, slow-motion beats on near-misses and shields, and win/defeat sequences with particles and screen shake.
-- **Optional Dogecoin support** — a gentle support modal appears after your third run. Nothing is gated; the whole game stays free.
+- **Credits economy.** Collect golden coin pickups mid-flight and earn run bonuses (altitude, score, combo, victory) — credits persist locally.
+- **Hangar unlocks.** Spend credits to unlock the **Velocity / Fortress / Sovereign** loadouts straight from the menu.
+- **Pause anytime** — the ⏸ button or `Esc` / `P`, with Resume / Restart / Menu.
+- **UX** — credit balance in the Hangar, a `+credits` count-up on results, a gentle coin magnet, and clearer onboarding.
+- **Stability** — fixed a zone-index crash; the update and draw loops now run inside guarded handlers, and the on-screen error reporter remains as a safety net.
 
 ## The AxonOS metaphor
 
@@ -51,6 +51,7 @@ The real, replay-verified engines live in [`axonos-boundary-run-v64`](https://gi
 | Steer | `←` `→` &nbsp;/&nbsp; `A` `D` | **drag** anywhere |
 | Boost | `↑` &nbsp;/&nbsp; `W` | **double-tap** |
 | Shield | `↓` &nbsp;/&nbsp; `S` &nbsp;/&nbsp; `Space` | **tap** |
+| Pause | `Esc` &nbsp;/&nbsp; `P` | **⏸** button |
 
 ## Run
 
@@ -62,15 +63,15 @@ cd AG0001
 python3 -m http.server 8080
 ```
 
-Open `http://127.0.0.1:8080`. &nbsp;(Or just [play the hosted build](https://axonos-bci.github.io/AG0001/?v=1.1.0).)
+Open `http://127.0.0.1:8080`. &nbsp;(Or just [play the hosted build](https://axonos-bci.github.io/AG0001/?v=1.2.0).)
 
 ## Architecture
 
 - **Single file.** Markup, styling, engine, cinematics — all in `index.html`.
 - **Deterministic core.** xorshift PRNG (BigInt) with an integer fallback.
 - **Canvas 2D loop** with momentum physics, particles, parallax, and screen shake.
-- **Visible error reporter.** Any runtime error surfaces as an on-screen banner — never a blank screen.
-- **Local only.** No requests of any kind; high scores live in `localStorage` and are never transmitted.
+- **Guarded runtime.** Update and draw run inside try/catch; any error surfaces as an on-screen banner — never a blank screen.
+- **Local only.** No requests of any kind; scores and credits live in `localStorage` and are never transmitted.
 
 ## Verify
 
@@ -89,7 +90,7 @@ AG0001 is an **educational and brand artifact**. It contains no neural interface
 
 ## Version
 
-Current version: `1.1.0`
+Current version: `1.2.0`
 
 ## Related
 

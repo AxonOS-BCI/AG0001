@@ -5,11 +5,11 @@ test -f README.md
 test -f index.html
 test -f VERSION
 
-grep -q 'Chronos Boundary Flight v1.1.0' index.html || { echo 'FAIL: index.html is not v1.1.0'; exit 1; }
+grep -q 'Chronos Boundary Flight v1.2.0' index.html || { echo 'FAIL: index.html is not v1.2.0'; exit 1; }
 grep -q '</html>' index.html || { echo 'FAIL: index.html is truncated'; exit 1; }
-grep -q 'Current version: `1.1.0`' README.md || { echo 'FAIL: README version mismatch'; exit 1; }
-grep -q 'https://axonos-bci.github.io/AG0001/?v=1.1.0' README.md || { echo 'FAIL: README play link mismatch'; exit 1; }
-grep -q '^1.1.0$' VERSION || { echo 'FAIL: VERSION mismatch'; exit 1; }
+grep -q 'Current version: `1.2.0`' README.md || { echo 'FAIL: README version mismatch'; exit 1; }
+grep -q 'https://axonos-bci.github.io/AG0001/?v=1.2.0' README.md || { echo 'FAIL: README play link mismatch'; exit 1; }
+grep -q '^1.2.0$' VERSION || { echo 'FAIL: VERSION mismatch'; exit 1; }
 
 TMP_JS="${TMPDIR:-$PWD/.tmp}/ag0001-inline-check.js"
 mkdir -p "$(dirname "$TMP_JS")"
@@ -29,4 +29,4 @@ else
   echo 'WARN: node unavailable; skipping JS syntax check'
 fi
 
-echo 'OK: AG0001 v1.1.0 single-file runtime verified'
+echo 'OK: AG0001 v1.2.0 single-file runtime verified'
