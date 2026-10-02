@@ -10,6 +10,7 @@
 [![runtime](https://img.shields.io/badge/runtime-single--file_HTML-8957e5)](index.html)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#not-a-medical-device)
 [![scope](https://img.shields.io/badge/scope-educational_artifact-d29922)](#not-a-medical-device)
+[![AxonOS Radar](https://img.shields.io/badge/AxonOS%20Radar-open%20neurotech%20map-1f8fae?labelColor=0b1220)](https://axonos-bci.github.io/axonos-community-radar/)
 
 ### [▶ &nbsp;Play in your browser](https://axonos-bci.github.io/AG0001/?v=1.2.0)
 
